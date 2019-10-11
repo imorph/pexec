@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"log"
 	"time"
 )
 
@@ -56,15 +56,15 @@ func (w Worker) Start(jobs chan Job, results chan error, exit chan bool) {
 		select {
 		// non bloking try
 		case <-exit:
-			//fmt.Println("WORKER ==> got exit signal stoppping")
+			log.Println("WORKER ==> got exit signal stoppping")
 			return
 		default:
 			// get jobs or go to sleep
 			select {
 			case fn := <-jobs:
-				//fmt.Println("WORKER ==> worker", w.ID, "started  job")
+				log.Println("WORKER ==> worker", w.ID, "started  job")
 				err := fn()
-				//fmt.Println("WORKER ==> worker", w.ID, "finished job")
+				log.Println("WORKER ==> worker", w.ID, "finished job")
 				results <- err
 			default:
 				time.Sleep(time.Millisecond * 1)
@@ -93,16 +93,16 @@ func (wp *WorkerPool) WaitResults(maxErrNum int, maxJobsNum int) {
 	jobCount := 0
 	for err := range wp.results {
 		jobCount++
-		//fmt.Println("RESULT ==> Jobs done:", jobCount)
+		log.Println("RESULT ==> Jobs done:", jobCount)
 		if jobCount == maxJobsNum {
-			//fmt.Println("RESULT ==> All jobs done. Unblocking.")
+			log.Println("RESULT ==> All jobs done. Unblocking.")
 			return
 		}
 		if err != nil {
-			//fmt.Println("RESULT ==> error detected!")
+			log.Println("RESULT ==> error detected!")
 			errNum++
 			if errNum == maxErrNum {
-				//fmt.Println("RESULT ==> Too many errors, unblocking. WorkerPool will be stopped.")
+				log.Println("RESULT ==> Too many errors, unblocking. WorkerPool will be stopped.")
 				return
 			}
 		}
@@ -112,7 +112,7 @@ func (wp *WorkerPool) WaitResults(maxErrNum int, maxJobsNum int) {
 // Stop worker pool
 func (wp *WorkerPool) Stop() {
 	for w := 1; w <= wp.poolSize; w++ {
-		//fmt.Println("STOPWP ==> Send stop to worker")
+		log.Println("STOPWP ==> Send stop to worker")
 		wp.exit <- true
 	}
 }

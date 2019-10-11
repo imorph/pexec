@@ -1,10 +1,5 @@
 package main
 
-import (
-//"fmt"
-//"time"
-)
-
 func jobExec2(jobPac []Job, poolSize int, maxErrNum int) {
 	wp := NewWorkerPool(poolSize, len(jobPac))
 	wp.Start()

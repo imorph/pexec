@@ -1,4 +1,4 @@
-all: clean deps check_all build
+all: clean deps check_all test build
 
 clean:
 	rm -rf ./pexec
@@ -32,6 +32,9 @@ golangci-lint: install-golangci-lint
 
 install-golangci-lint:
 	which golangci-lint || GO111MODULE=off go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+
+test:
+	go test -race -coverprofile=profile.out -covermode=atomic .
 
 build:
 	GO111MODULE=on go build .
